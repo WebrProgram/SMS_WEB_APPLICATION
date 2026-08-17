@@ -31,7 +31,7 @@ import { SocketProvider, useSocket } from '../context/SocketContext';
 import { useWakeLock } from '../hooks/useWakeLock';
 
 // 🟢 FIX 1: Vercel production deployment ke liye dynamic cross-origin fallback absolute URL bind kiya
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "https://school-management-system-production-73ff.up.railway.app").replace(/\/$/, "");
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://school-erp-production.up.railway.app";
 
 function AppContent({ token, setToken, user, setUser }) {
   useWakeLock();
@@ -123,29 +123,24 @@ function AppContent({ token, setToken, user, setUser }) {
     if (typeof window === "undefined") return;
     const originalFetch = window.fetch;
     window.fetch = async (...args) => {
-      try {
-        const response = await originalFetch(...args);
-        if (response && (response.status === 401 || response.status === 403)) {
-          try {
-            const clone = response.clone();
-            const body = await clone.json();
-            if (body && (body.message?.toLowerCase().includes("token") || body.message?.toLowerCase().includes("expire"))) {
-              console.warn("Auth token invalid or expired. Auto-logging out...");
-              localStorage.removeItem('erp_token');
-              localStorage.removeItem('erp_user');
-              setToken(null);
-              setUser(null);
-              setActiveTab("dashboard");
-            }
-          } catch (e) {
-            // ignore parsing error
+      const response = await originalFetch(...args);
+      if (response.status === 401 || response.status === 403) {
+        try {
+          const clone = response.clone();
+          const body = await clone.json();
+          if (body && (body.message?.toLowerCase().includes("token") || body.message?.toLowerCase().includes("expire"))) {
+            console.warn("Auth token invalid or expired. Auto-logging out...");
+            localStorage.removeItem('erp_token');
+            localStorage.removeItem('erp_user');
+            setToken(null);
+            setUser(null);
+            setActiveTab("dashboard");
           }
+        } catch (e) {
+          // ignore parsing error
         }
-        return response;
-      } catch (err) {
-        // Pass network error through cleanly
-        throw err;
       }
+      return response;
     };
     return () => {
       window.fetch = originalFetch;

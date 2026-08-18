@@ -30,8 +30,8 @@ import SettingsManager from '../components/SettingsManager';
 import { SocketProvider, useSocket } from '../context/SocketContext';
 import { useWakeLock } from '../hooks/useWakeLock';
 
-// 🟢 FIX 1: Vercel production deployment ke liye dynamic cross-origin fallback absolute URL bind kiya
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "https://school-management-system-production-73ff.up.railway.app").replace(/\/$/, "");
+// 🟢 FIX 1: Dynamic cross-origin absolute API URL (Express Backend Server Port 5000)
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "");
 
 function AppContent({ token, setToken, user, setUser }) {
   useWakeLock();
@@ -226,7 +226,10 @@ function AppContent({ token, setToken, user, setUser }) {
         setToken(res.token);
         setUser(res.user);
       } else {
-        setLoginError(res.message || "Invalid username or password.");
+        const msg = (res.message && res.message.includes('out of range'))
+          ? "Database server is offline or unreachable. Please start/power on your Aiven or Railway MySQL database."
+          : (res.message || "Invalid username or password.");
+        setLoginError(msg);
       }
     } catch (err) {
       setLoginError("Failed to connect to server. Please check your connection.");

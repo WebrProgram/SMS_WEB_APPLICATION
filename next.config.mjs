@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async rewrites() {
-    const targetUrl = (process.env.NEXT_PUBLIC_API_URL || 'https://school-management-system-production-710f.up.railway.app').replace(/\/$/, '');
+    const rawUrl = process.env.NEXT_PUBLIC_API_URL || 'https://school-management-system-production-710f.up.railway.app';
+    const targetUrl = rawUrl.replace('3c20', '710f').replace('73ff', '710f').replace(/\/$/, '');
     return [
       {
         source: '/api/:path*',

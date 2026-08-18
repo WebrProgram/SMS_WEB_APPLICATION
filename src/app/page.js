@@ -30,8 +30,9 @@ import SettingsManager from '../components/SettingsManager';
 import { SocketProvider, useSocket } from '../context/SocketContext';
 import { useWakeLock } from '../hooks/useWakeLock';
 
-// 🟢 FIX 1: Vercel production deployment ke liye dynamic cross-origin fallback absolute URL bind kiya
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "https://school-management-system-production-710f.up.railway.app").replace(/\/$/, "");
+// 🟢 FIX 1: Auto-sanitize obsolete Railway domain IDs (force 710f active server)
+const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "https://school-management-system-production-710f.up.railway.app";
+const API_BASE_URL = rawApiUrl.replace("3c20", "710f").replace("73ff", "710f").replace(/\/$/, "");
 
 function AppContent({ token, setToken, user, setUser }) {
   useWakeLock();

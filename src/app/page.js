@@ -31,7 +31,7 @@ import { SocketProvider, useSocket } from '../context/SocketContext';
 import { useWakeLock } from '../hooks/useWakeLock';
 
 // 🟢 FIX 1: Vercel production deployment ke liye dynamic cross-origin fallback absolute URL bind kiya
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "https://school-management-system-production-3c20.up.railway.app").replace(/\/$/, "");
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "https://school-management-system-production-710f.up.railway.app").replace(/\/$/, "");
 
 function AppContent({ token, setToken, user, setUser }) {
   useWakeLock();

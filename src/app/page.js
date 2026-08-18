@@ -30,8 +30,8 @@ import SettingsManager from '../components/SettingsManager';
 import { SocketProvider, useSocket } from '../context/SocketContext';
 import { useWakeLock } from '../hooks/useWakeLock';
 
-// 🟢 FIX 1: Dynamic cross-origin absolute API URL (Express Backend Server Port 5000)
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "");
+// 🟢 FIX 1: Vercel production deployment ke liye dynamic cross-origin fallback absolute URL bind kiya
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "https://school-management-system-production-3c20.up.railway.app").replace(/\/$/, "");
 
 function AppContent({ token, setToken, user, setUser }) {
   useWakeLock();
